@@ -1,0 +1,10 @@
+{
+  "name": "team/ecommerce-backend",
+  "description": "Modular OOP PHP backend for eCommerce",
+  "autoload": {
+    "psr-4": {
+      "App\\": "app/"
+    }
+  },
+  "require": {}
+}
