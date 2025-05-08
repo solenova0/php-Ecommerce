@@ -29,8 +29,8 @@ and secure file uploads.
 
 ## File Structure
 
-Here's a brief overview of the project's file structure:
-
+**Here's a brief overview of the project's file structure:**
+**
 admin/
 ├── admin_accounts.php
 ├── admin_login.php
@@ -50,11 +50,12 @@ components/
 js/
 ├── admin_script.js
 project images/
-└── (image files)
-Contact
-For questions or inquiries, you can reach us at:
+└── (image files)**
 
-Group Email:W8team.email@example.com
+**Contact**
+**For questions or inquiries, you can reach us at:
+
+Group Email:W8team.email@example.com**
 
 ## Team Members
 **1.SOLAN ADUGNA**
