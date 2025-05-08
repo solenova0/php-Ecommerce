@@ -56,9 +56,13 @@ For questions or inquiries, you can reach us at:
 
 Group Email:W8team.email@example.com
 
-Team Members
-1.SOLAN ADUGNA 
-2.SISIYO TAKELE
-3.SOSINA AYELE
-4.SOSINA TILAHUN
-5.TSEGAYE BERHE
+## Team Members
+**1.SOLAN ADUGNA**
+
+**2.SISIYO TAKELE**
+
+**3.SOSINA AYELE**
+
+**4.SOSINA TILAHUN**
+
+**5.TSEGAYE BERHE**
