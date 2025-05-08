@@ -14,9 +14,6 @@ and secure file uploads.
 - User profile management
 - Order history and tracking
 
-## Demo
-
-A live demo of the project is available at: [Your Demo URL](#)
 
 ## Technologies Used
 
@@ -25,7 +22,8 @@ A live demo of the project is available at: [Your Demo URL](#)
   - JavaScript
 
 - **Backend:**
-    - PHP
+  - PHP
+    
 -**Database:**
   - MySQL
 
