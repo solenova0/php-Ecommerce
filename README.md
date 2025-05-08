@@ -21,11 +21,12 @@ A live demo of the project is available at: [Your Demo URL](#)
 ## Technologies Used
 
 - **Frontend:**
-  - PHP
   - CSS
   - JavaScript
 
 - **Backend:**
+    - PHP
+-**Database:**
   - MySQL
 
 ## File Structure
