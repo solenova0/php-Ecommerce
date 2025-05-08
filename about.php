@@ -1,5 +1,4 @@
 <?php
-
 include 'components/connect.php';
 
 session_start();
@@ -144,13 +143,6 @@ if(isset($_SESSION['user_id'])){
    </div>
 
 </section>
-
-
-
-
-
-
-
 
 
 <?php include 'components/footer.php'; ?>
