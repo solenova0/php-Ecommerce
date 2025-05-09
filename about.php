@@ -43,7 +43,8 @@ if(isset($_SESSION['user_id'])){
 
       <div class="content">
          <h3>Why Choose Us?</h3>
-         <p>We are committed to providing top-quality service and ensuring customer satisfaction. Our team is always ready to assist you, and we aim to make your shopping experience smooth, secure, and enjoyable.</p>
+         <p>We are committed to providing top-quality service and ensuring customer satisfaction. 
+            Our team is always ready to assist you, and we aim to make your shopping experience smooth, secure, and enjoyable.</p>
          <a href="contact.php" class="btn">Contact Us</a>
       </div>
 
