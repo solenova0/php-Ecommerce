@@ -40,9 +40,13 @@ Create a branch, make changes, and submit a Pull Request.
 
 👥 W8 Team Contributors
 **Solan Adugna	
+
 Sisay Takele	
+
 Sosina Tilahun	
+
 Sosina Ayele	
+
 Tsegaye Berhe**
 
 📜 **License**
