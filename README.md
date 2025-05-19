@@ -39,7 +39,7 @@ git clone https://github.com/solenova0/php-Ecommerce.git
 Create a branch, make changes, and submit a Pull Request.
 
 👥 W8 Team Contributors
-**Solan Adugna	
+****Solan Adugna	
 
 Sisay Takele	
 
@@ -47,7 +47,7 @@ Sosina Tilahun
 
 Sosina Ayele	
 
-Tsegaye Berhe**
+Tsegaye Berhe****
 
 📜 **License**
 MIT License – Open source for learning and collaboration.
