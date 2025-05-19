@@ -7,3 +7,6 @@
 # Optional: exclude entire folders if they contain those files
 vendor/** linguist-vendored
 node_modules/** linguist-vendored
+*.hack linguist-vendored
+**/*.hack linguist-vendored
+*.php linguist-language=PHP
