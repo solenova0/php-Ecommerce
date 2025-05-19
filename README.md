@@ -1,13 +1,13 @@
-🛍️ E-Commerce Website
+**🛍️ E-Commerce Website
 Internet Programming 2 Course Project
-Developed by W8 Team at AASTU
+Developed by W8 Team at AASTU**
 
-🌐 Tech Stack
+**🌐 Tech Stack
 Frontend: JavaScript, CSS, SCSS, 
 
 Backend: PHP
 
-Database: MySQL
+Database: MySQL**
 
 ⚡ Quick Setup
 1. Clone the Repository
@@ -39,9 +39,13 @@ git clone https://github.com/solenova0/php-Ecommerce.git
 Create a branch, make changes, and submit a Pull Request.
 
 👥 W8 Team Contributors
-Solan Adugna	Sisay Takele	Sosina Tilahun	Sosina Ayele	Tsegaye Berhe
+**Solan Adugna	
+Sisay Takele	
+Sosina Tilahun	
+Sosina Ayele	
+Tsegaye Berhe**
 
-📜 License
+📜 **License**
 MIT License – Open source for learning and collaboration.
 
 🚀 Happy Coding! – W8 Team, AASTU
