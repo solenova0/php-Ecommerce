@@ -13,3 +13,8 @@ node_modules/** linguist-vendored
 assets/js/vendor/* linguist-vendored
 public/js/* linguist-vendored
 assets/js/app.js linguist-documentation
+assets/js/vendor/* linguist-vendored
+public/js/* linguist-vendored
+node_modules/** linguist-vendored
+tests/**/*.js linguist-vendored
+
