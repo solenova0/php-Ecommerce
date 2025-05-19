@@ -1,117 +1,112 @@
-<?php
-
-include 'components/connect.php';
-
-session_start();
-
-if(isset($_SESSION['user_id'])){
-   $user_id = $_SESSION['user_id'];
-}else{
-   $user_id = '';
-   header('location:user_login.php');
-};
-
-if(isset($_POST['delete'])){
-   $cart_id = $_POST['cart_id'];
-   $delete_cart_item = $conn->prepare("DELETE FROM `cart` WHERE id = ?");
-   $delete_cart_item->execute([$cart_id]);
-}
-
-if(isset($_GET['delete_all'])){
-   $delete_cart_item = $conn->prepare("DELETE FROM `cart` WHERE user_id = ?");
-   $delete_cart_item->execute([$user_id]);
-   header('location:cart.php');
-}
-
-if(isset($_POST['update_qty'])){
-   $cart_id = $_POST['cart_id'];
-   $qty = $_POST['qty'];
-   $qty = filter_var($qty, FILTER_SANITIZE_STRING);
-   $update_qty = $conn->prepare("UPDATE `cart` SET quantity = ? WHERE id = ?");
-   $update_qty->execute([$qty, $cart_id]);
-   $message[] = 'cart quantity updated';
-}
-
-?>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-   <meta charset="UTF-8">
-   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>shopping cart</title>
-   
-   <!-- font awesome cdn link  -->
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-
-   <!-- custom css file link  -->
-   <link rel="stylesheet" href="css/style.css">
-
-</head>
-<body>
-   
-<?php include 'components/user_header.php'; ?>
-
-<section class="products shopping-cart">
-
-   <h3 class="heading">shopping cart</h3>
-
-   <div class="box-container">
-
-   <?php
-      $grand_total = 0;
-      $select_cart = $conn->prepare("SELECT * FROM `cart` WHERE user_id = ?");
-      $select_cart->execute([$user_id]);
-      if($select_cart->rowCount() > 0){
-         while($fetch_cart = $select_cart->fetch(PDO::FETCH_ASSOC)){
-   ?>
-   <form action="" method="post" class="box">
-      <input type="hidden" name="cart_id" value="<?= $fetch_cart['id']; ?>">
-      <a href="quick_view.php?pid=<?= $fetch_cart['pid']; ?>" class="fas fa-eye"></a>
-      <img src="uploaded_img/<?= $fetch_cart['image']; ?>" alt="">
-      <div class="name"><?= $fetch_cart['name']; ?></div>
-      <div class="flex">
-         <div class="price">$<?= $fetch_cart['price']; ?>/-</div>
-         <input type="number" name="qty" class="qty" min="1" max="99" onkeypress="if(this.value.length == 2) return false;" value="<?= $fetch_cart['quantity']; ?>">
-         <button type="submit" class="fas fa-edit" name="update_qty"></button>
+<section id="cart_items">
+    <div class="container">
+      <div class="breadcrumbs">
+        <ol class="breadcrumb">
+          <li><a href="#">Home</a></li>
+          <li class="active">Shopping Cart</li>
+        </ol>
       </div>
-      <div class="sub-total"> sub total : <span>$<?= $sub_total = ($fetch_cart['price'] * $fetch_cart['quantity']); ?>/-</span> </div>
-      <input type="submit" value="delete item" onclick="return confirm('delete this from cart?');" class="delete-btn" name="delete">
-   </form>
-   <?php
-   $grand_total += $sub_total;
-      }
-   }else{
-      echo '<p class="empty">your cart is empty</p>';
-   }
-   ?>
-   </div>
-
-   <div class="cart-total">
-      <p>grand total : <span>$<?= $grand_total; ?>/-</span></p>
-      <a href="shop.php" class="option-btn">continue shopping</a>
-      <a href="cart.php?delete_all" class="delete-btn <?= ($grand_total > 1)?'':'disabled'; ?>" onclick="return confirm('delete all from cart?');">delete all item</a>
-      <a href="checkout.php" class="btn <?= ($grand_total > 1)?'':'disabled'; ?>">proceed to checkout</a>
-   </div>
-
+      <div class="table-responsive cart_info"> 
+        <?php  
+        check_message();  
+        ?>
+        <table class="table table-condensed" id="table">
+          <thead>
+            <tr class="cart_menu">
+              <td>Product</td>
+              <td>Description</td>
+              <td width="15%">Price</td>
+              <td width="15%">Quantity</td>
+              <td width="15%">Total</td>
+            </tr>
+          </thead>
+          <tbody>
+            <?php
+            global $pdo;
+            if (!empty($_SESSION['gcCart'])) {
+                echo '<script>totalprice()</script>';
+                $count_cart = count($_SESSION['gcCart']);
+                for ($i = 0; $i < $count_cart; $i++) {
+                    $productid = $_SESSION['gcCart'][$i]['productid'];
+                    $sql = "SELECT * FROM tblpromopro pr
+                            JOIN tblproduct p ON pr.PROID = p.PROID
+                            JOIN tblcategory c ON p.CATEGID = c.CATEGID
+                            WHERE p.PROID = :productid";
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->execute([':productid' => $productid]);
+                    $results = $stmt->fetchAll(PDO::FETCH_OBJ);
+                    foreach ($results as $result) {
+            ?>
+            <tr>
+              <td>
+                <img src="<?php echo web_root . 'admin/products/' . htmlspecialchars($result->IMAGES); ?>" onload="totalprice()" width="50" height="50"><br/>
+                <?php
+                if (isset($_SESSION['CUSID'])) {
+                    echo '<a href="' . web_root . 'customer/controller.php?action=addwish&proid=' . htmlspecialchars($result->PROID) . '" title="Add to wishlist">Add to wishlist</a>';
+                } else {
+                    echo '<a href="#" title="Add to wishlist" class="proid" data-target="#smyModal" data-toggle="modal" data-id="' . htmlspecialchars($result->PROID) . '">Add to wishlist</a>';
+                }
+                ?>
+              </td>
+              <td><?php echo htmlspecialchars($result->PRODESC); ?></td>
+              <td>
+                <input type="hidden" id="PROPRICE<?php echo $result->PROID; ?>" name="PROPRICE<?php echo $result->PROID; ?>" value="<?php echo htmlspecialchars($result->PRODISPRICE); ?>">
+                Br <?php echo htmlspecialchars($result->PRODISPRICE); ?>
+              </td>
+              <td class="input-group custom-search-form">
+                <input type="hidden" maxlength="3" class="form-control input-sm" autocomplete="off" id="ORIGQTY<?php echo $result->PROID; ?>" name="ORIGQTY<?php echo $result->PROID; ?>" value="<?php echo htmlspecialchars($result->PROQTY); ?>">
+                <input type="number" maxlength="3" data-id="<?php echo $result->PROID; ?>" class="QTY form-control input-sm" autocomplete="off" id="QTY<?php echo $result->PROID; ?>" name="QTY<?php echo $result->PROID; ?>" value="<?php echo htmlspecialchars($_SESSION['gcCart'][$i]['qty']); ?>">
+                <span class="input-group-btn">
+                  <a title="Remove Item" class="btn btn-danger btn-sm" id="btnsearch" name="btnsearch" href="cart/controller.php?action=delete&id=<?php echo htmlspecialchars($result->PROID); ?>">
+                    <i class="fa fa-trash-o"></i>
+                  </a>
+                </span>
+              </td>
+              <input type="hidden" id="TOT<?php echo $result->PROID; ?>" name="TOT<?php echo $result->PROID; ?>" value="<?php echo htmlspecialchars($result->PRODISPRICE); ?>">
+              <td>Br <output id="Osubtot<?php echo $result->PROID; ?>"><?php echo htmlspecialchars($_SESSION['gcCart'][$i]['price']); ?></output></td>
+            </tr>
+            <?php
+                    }
+                }
+            } else {
+                echo "<tr><td colspan='5'><h1>There is no item in the cart.</h1></td></tr>";
+            }
+            ?>
+          </tbody>
+        </table>
+        <h3 align="right">Total Br <span id="sum">0</span></h3>
+      </div>
+    </div>
 </section>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<?php include 'components/footer.php'; ?>
-
-<script src="js/script.js"></script>
-
-</body>
-</html>
+<section id="do_action">
+    <div class="container">
+      <div class="heading">
+        <h3>What would you like to do next?</h3>
+        <p>Choose if you have a discount code or reward points you want to use or would like to estimate your delivery cost.</p>
+      </div>
+      <div class="row">
+        <form action="index.php?q=orderdetails" method="post">
+          <a href="index.php?q=product" class="btn btn-default check_out pull-left">
+            <i class="fa fa-arrow-left fa-fw"></i>
+            Add New Order
+          </a>
+          <?php
+          $countcart = isset($_SESSION['gcCart']) ? count($_SESSION['gcCart']) : 0;
+          if ($countcart > 0) {
+              if (isset($_SESSION['CUSID'])) {
+                  echo '<button type="submit" name="proceed" id="proceed" class="btn btn-default check_out btn-pup pull-right">
+                          Proceed And Checkout
+                          <i class="fa fa-arrow-right fa-fw"></i>
+                        </button>';
+              } else {
+                  echo '<a data-target="#smyModal" data-toggle="modal" class="btn btn-default check_out signup pull-right" href="">
+                          Proceed And Checkout
+                          <i class="fa fa-arrow-right fa-fw"></i>
+                        </a>';
+              }
+          }
+          ?>
+        </form>
+      </div>
+    </div>
+</section><!--/#do_action-->

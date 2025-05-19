@@ -1,220 +1,141 @@
-<?php
+<section id="slider"><!--slider-->
+    <!-- ...slider code unchanged... -->
+</section><!--/slider-->
 
-include 'components/connect.php';
+<section>
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-3">
+            <?php include 'sidebar.php'; ?>
+        </div>
+        <div class="col-sm-9 padding-right">
+          <div class="features_items"><!--features_items-->
+            <h2 class="title text-center">Features Items</h2>
+            <?php
+            global $pdo;
+            $sql = "SELECT * FROM tblpromopro pr
+                    JOIN tblproduct p ON pr.PROID = p.PROID
+                    JOIN tblcategory c ON p.CATEGID = c.CATEGID
+                    WHERE p.PROQTY > 0";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute();
+            $results = $stmt->fetchAll(PDO::FETCH_OBJ);
 
-session_start();
+            foreach ($results as $result): ?>
+                <form method="POST" action="cart/controller.php?action=add">
+                    <input type="hidden" name="PROPRICE" value="<?php echo htmlspecialchars($result->PROPRICE); ?>">
+                    <input type="hidden" id="PROQTY" name="PROQTY" value="<?php echo htmlspecialchars($result->PROQTY); ?>">
+                    <input type="hidden" name="PROID" value="<?php echo htmlspecialchars($result->PROID); ?>">
+                    <div class="col-sm-4">
+                      <div class="product-image-wrapper">
+                        <div class="single-products">
+                            <div class="productinfo text-center">
+                              <img src="<?php echo web_root . 'admin/products/' . htmlspecialchars($result->IMAGES); ?>" alt="" />
+                              <h2>$<?php echo htmlspecialchars($result->PRODISPRICE); ?></h2>
+                              <p><?php echo htmlspecialchars($result->PRODESC); ?></p>
+                              <button type="submit" name="btnorder" class="btn add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</button>
+                            </div>
+                            <div class="product-overlay">
+                              <div class="overlay-content">
+                                <h3>$<?php echo htmlspecialchars($result->PRODISPRICE); ?></h3>
+                                <p><?php echo htmlspecialchars($result->PRODESC); ?></p>
+                                <button type="submit" name="btnorder" class="add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</button>
+                              </div>
+                            </div>
+                        </div>
+                        <div class="choose">
+                          <ul class="nav nav-pills nav-justified">
+                            <li>
+                              <?php
+                              if (isset($_SESSION['CUSID'])) {
+                                  echo '<a href="' . web_root . 'customer/controller.php?action=addwish&proid=' . htmlspecialchars($result->PROID) . '" title="Add to wishlist" class="btn btn-danger"><i class="fa fa-plus-square"></i>Add to wishlist</a>';
+                              } else {
+                                  echo '<a href="#" title="Add to wishlist" class="proid" data-target="#smyModal" data-toggle="modal" data-id="' . htmlspecialchars($result->PROID) . '"><i class="fa fa-plus-square"></i>Add to wishlist</a>';
+                              }
+                              ?>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                </form>
+            <?php endforeach; ?>
+          </div><!--features_items-->
 
-if(isset($_SESSION['user_id'])){
-   $user_id = $_SESSION['user_id'];
-}else{
-   $user_id = '';
-};
+          <div class="recommended_items"><!--recommended_items-->
+            <h2 class="title text-center">Recommended Items</h2>
+            <div id="recommended-item-carousel" class="carousel slide" data-ride="carousel">
+              <div class="carousel-inner">
+                <div class="item active">
+                  <?php
+                  $sql = "SELECT * FROM tblpromopro pr
+                          JOIN tblproduct p ON pr.PROID = p.PROID
+                          JOIN tblcategory c ON p.CATEGID = c.CATEGID
+                          WHERE p.PROQTY > 0 LIMIT 3";
+                  $stmt = $pdo->prepare($sql);
+                  $stmt->execute();
+                  $results = $stmt->fetchAll(PDO::FETCH_OBJ);
 
-include 'components/wishlist_cart.php';
+                  foreach ($results as $result): ?>
+                    <form method="POST" action="cart/controller.php?action=add">
+                        <input type="hidden" name="PROPRICE" value="<?php echo htmlspecialchars($result->PROPRICE); ?>">
+                        <input type="hidden" id="PROQTY" name="PROQTY" value="<?php echo htmlspecialchars($result->PROQTY); ?>">
+                        <input type="hidden" name="PROID" value="<?php echo htmlspecialchars($result->PROID); ?>">
+                        <div class="col-sm-4">
+                          <div class="product-image-wrapper">
+                            <div class="single-products">
+                              <div class="productinfo text-center">
+                                <img src="<?php echo web_root . 'admin/products/' . htmlspecialchars($result->IMAGES); ?>" alt="" />
+                                <h2>$<?php echo htmlspecialchars($result->PRODISPRICE); ?></h2>
+                                <p><?php echo htmlspecialchars($result->PRODESC); ?></p>
+                                <button type="submit" name="btnorder" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </form>
+                  <?php endforeach; ?>
+                </div>
+                <div class="item">
+                  <?php
+                  $sql = "SELECT * FROM tblpromopro pr
+                          JOIN tblproduct p ON pr.PROID = p.PROID
+                          JOIN tblcategory c ON p.CATEGID = c.CATEGID
+                          WHERE p.PROQTY > 0 LIMIT 3,6";
+                  $stmt = $pdo->prepare($sql);
+                  $stmt->execute();
+                  $results = $stmt->fetchAll(PDO::FETCH_OBJ);
 
-?>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-   <meta charset="UTF-8">
-   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>home</title>
-
-   <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css" />
-   
-   <!-- font awesome cdn link  -->
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-
-   <!-- custom css file link  -->
-   <link rel="stylesheet" href="css/style.css">
-
-</head>
-<body>
-   
-<?php include 'components/user_header.php'; ?>
-
-<div class="home-bg">
-
-<section class="home">
-
-   <div class="swiper home-slider">
-   
-   <div class="swiper-wrapper">
-
-      <div class="swiper-slide slide">
-         <div class="image">
-            <img src="images/smart.jpg" alt="">
-         </div>
-         <div class="content">
-            <span>upto 50% off</span>
-            <h3>Latest Smartphones</h3>
-            <a href="shop.php" class="btn">shop now</a>
-         </div>
+                  foreach ($results as $result): ?>
+                    <form method="POST" action="cart/controller.php?action=add">
+                        <input type="hidden" name="PROPRICE" value="<?php echo htmlspecialchars($result->PROPRICE); ?>">
+                        <input type="hidden" id="PROQTY" name="PROQTY" value="<?php echo htmlspecialchars($result->PROQTY); ?>">
+                        <input type="hidden" name="PROID" value="<?php echo htmlspecialchars($result->PROID); ?>">
+                        <div class="col-sm-4">
+                          <div class="product-image-wrapper">
+                            <div class="single-products">
+                              <div class="productinfo text-center">
+                                <img src="<?php echo web_root . 'admin/products/' . htmlspecialchars($result->IMAGES); ?>" alt="" />
+                                <h2>$<?php echo htmlspecialchars($result->PRODISPRICE); ?></h2>
+                                <p><?php echo htmlspecialchars($result->PRODESC); ?></p>
+                                <button type="submit" name="btnorder" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </form>
+                  <?php endforeach; ?>
+                </div>
+              </div>
+              <a class="left recommended-item-control" href="#recommended-item-carousel" data-slide="prev">
+                <i class="fa fa-angle-left"></i>
+              </a>
+              <a class="right recommended-item-control" href="#recommended-item-carousel" data-slide="next">
+                <i class="fa fa-angle-right"></i>
+              </a>
+            </div>
+          </div><!--/recommended_items-->
+        </div>
       </div>
-
-      <div class="swiper-slide slide">
-         <div class="image">
-            <img src="images/jeans.jpg" alt="">
-         </div>
-         <div class="content">
-            <span>upto 50% off</span>
-            <h3>Latest Jeans</h3>
-            <a href="shop.php" class="btn">shop now</a>
-         </div>
-      </div>
-
-      <div class="swiper-slide slide">
-         <div class="image">
-            <img src="images/watches.jpg" alt="">
-         </div>
-         <div class="content">
-            <span>upto 50% off</span>
-            <h3>Smartwatches</h3>
-            <a href="shop.php" class="btn">shop now</a>
-         </div>
-      </div>
-
-   </div>
-
-      <div class="swiper-pagination"></div>
-
-   </div>
-
+    </div>
 </section>
-
-</div>
-
-<section class="category">
-
-   <h1 class="heading">Types of Clothes & Electronics</h1>
-
-   <div class="swiper category-slider">
-
-   <div class="swiper-wrapper">
-
-   <!-- Clothing Categories -->
-   <a href="category.php?category=t-shirts" class="swiper-slide slide">
-      <img src="images/c-1.jpg" alt="T-Shirts">
-      <h3>T-Shirts</h3>
-   </a>
-
-   <a href="category.php?category=hodies" class="swiper-slide slide">
-      <img src="images/c-2.jpg" alt="Hoodies">
-      <h3>Hoodies</h3>
-   </a>
-
-   <a href="category.php?category=jeans" class="swiper-slide slide">
-      <img src="images/c-3.jpg" alt="Jeans">
-      <h3>Jeans</h3>
-   </a>
-
-   <a href="category.php?category=dresses" class="swiper-slide slide">
-      <img src="images/c-4.jpg" alt="Dresses">
-      <h3>Dresses</h3>
-   </a>
-
-   <a href="category.php?category=jackets" class="swiper-slide slide">
-      <img src="images/c-5.jpg" alt="Jackets">
-      <h3>Jackets</h3>
-   </a>
-
-   <!-- Electronics Categories -->
-   <a href="category.php?category=smartphones" class="swiper-slide slide">
-      <img src="images/e-1.jpg" alt="Smartphones">
-      <h3>Smartphones</h3>
-   </a>
-
-   <a href="category.php?category=laptops" class="swiper-slide slide">
-      <img src="images/e-2.jpg" alt="Laptops">
-      <h3>Laptops</h3>
-   </a>
-
-   <a href="category.php?category=headphones" class="swiper-slide slide">
-      <img src="images/e-3.jpg" alt="Headphones">
-      <h3>Headphones</h3>
-   </a>
-
-   <a href="category.php?category=smartwatches" class="swiper-slide slide">
-      <img src="images/e-4.jpg" alt="Smartwatches">
-      <h3>Smartwatches</h3>
-   </a>
-
-   <a href="category.php?category=tablets" class="swiper-slide slide">
-      <img src="images/e-5.jpg" alt="Tablets">
-      <h3>Tablets</h3>
-   </a>
-
-   </div>
-
-   <div class="swiper-pagination"></div>
-
-   </div>
-
-</section>
-
-<?php include 'components/footer.php'; ?>
-
-<script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
-
-<script src="js/script.js"></script>
-
-<script>
-
-var swiper = new Swiper(".home-slider", {
-   loop:true,
-   spaceBetween: 20,
-   pagination: {
-      el: ".swiper-pagination",
-      clickable:true,
-    },
-});
-
- var swiper = new Swiper(".category-slider", {
-   loop:true,
-   spaceBetween: 20,
-   pagination: {
-      el: ".swiper-pagination",
-      clickable:true,
-   },
-   breakpoints: {
-      0: {
-         slidesPerView: 2,
-       },
-      650: {
-        slidesPerView: 3,
-      },
-      768: {
-        slidesPerView: 4,
-      },
-      1024: {
-        slidesPerView: 5,
-      },
-   },
-});
-
-var swiper = new Swiper(".products-slider", {
-   loop:true,
-   spaceBetween: 20,
-   pagination: {
-      el: ".swiper-pagination",
-      clickable:true,
-   },
-   breakpoints: {
-      550: {
-        slidesPerView: 2,
-      },
-      768: {
-        slidesPerView: 2,
-      },
-      1024: {
-        slidesPerView: 3,
-      },
-   },
-});
-
-</script>
-
-</body>
-</html>
