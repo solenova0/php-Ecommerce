@@ -40,7 +40,7 @@ Create a branch, make changes, and submit a Pull Request
 
 👥 W8 Team Contributors
 SOLAN ADUGNA
-SISAY TAKELE
+SISIYO TAKELE
 SOSINA TILAHUN
 SOSINA AYELE
 TSEGAYE BERHE
