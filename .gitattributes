@@ -1,1 +1,9 @@
-hack/** linguist-vendored
+# Exclude Less files
+*.less linguist-vendored
+
+# Exclude Hack files
+*.hack linguist-vendored
+
+# Optional: exclude entire folders if they contain those files
+vendor/** linguist-vendored
+node_modules/** linguist-vendored
