@@ -10,3 +10,5 @@ node_modules/** linguist-vendored
 *.hack linguist-vendored
 **/*.hack linguist-vendored
 *.php linguist-language=PHP
+assets/js/vendor/* linguist-vendored
+public/js/* linguist-vendored
